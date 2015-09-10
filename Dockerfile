@@ -1,11 +1,15 @@
-FROM node:4.0.0
+FROM node:0.12.7
 
 RUN apt-get update -y
-RUN npm install statsd
 
-WORKDIR /node_modules/statsd
+RUN git clone -b v0.7.2 https://github.com/etsy/statsd.git
 
-ADD ./config.js /node_modules/statsd/
+WORKDIR /statsd
 
-CMD ["node","./stats.js","./config.js"]
+RUN wget https://github.com/anarcher/envconf/releases/download/0.0.2/envconf 
+RUN chmod u+xrw ./envconf
+
+ADD ./config.js /statsd/
+
+CMD ./envconf ./config.js ;  node ./stats.js ./config.js
 
